@@ -28,6 +28,17 @@
         app:layout_constraintStart_toStartOf="@+id/tvDirection"
         app:layout_constraintTop_toBottomOf="@+id/tvDirection" />
 
+    <TextView
+        android:id="@+id/tvDump"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text=""
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvPosition"
+        app:layout_constraintStart_toStartOf="@+id/tvPosition"
+        app:layout_constraintTop_toBottomOf="@+id/tvPosition" />
+
     <com.yoimerdr.android.virtualjoystick.views.JoystickView
         android:id="@+id/vJoystick"
         android:layout_width="wrap_content"
@@ -37,7 +48,8 @@
         app:arcControlDrawer_sweepAngle="100"
         app:controlDrawer_accentColor="#FFFFFF"
         app:controlDrawer_primaryColor="#FF0000"
-        app:controlType="circle"
+        app:controlType="circe_arc"
+        app:background="@drawable/circlefor_bg_000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

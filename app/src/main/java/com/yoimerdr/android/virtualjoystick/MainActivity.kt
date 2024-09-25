@@ -15,6 +15,7 @@ import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.DrawableControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.HighlightControlDrawer
 import com.yoimerdr.android.virtualjoystick.views.JoystickView
+import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -48,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         "Complete" to JoystickView.DirectionType.COMPLETE,
         "Simple" to JoystickView.DirectionType.SIMPLE
     )
+
+    private val decimalFormat = DecimalFormat("#.###")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -166,10 +169,19 @@ class MainActivity : AppCompatActivity() {
 
 
         vJoystick.apply {
-            setMoveListener {
-                tvDirection.text = getString(R.string.joystick_direction).format(it.name)
+            setMoveListener { direction, ndcAxis ->
+                tvDirection.text = getString(R.string.joystick_direction).format(direction.name)
                 val position = this.position
                 tvPosition.text = getString(R.string.joystick_position).format(position.x, position.y)
+
+                val dump: String = """
+                    |ndcAxis:${decimalFormat.format(ndcAxis.x)},  ${decimalFormat.format(ndcAxis.y)}
+                    |distance:${this.distance}
+                    |center:${this.center}
+                    |angle:${this.angle}
+                """.trimMargin()
+
+                binding.tvDump.text = dump
             }
         }
     }
