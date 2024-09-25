@@ -2,6 +2,7 @@ package com.yoimerdr.android.virtualjoystick.control
 
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.PointF
 import androidx.annotation.ColorInt
 import com.yoimerdr.android.virtualjoystick.control.drawer.ArcControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.CircleControlDrawer
@@ -17,6 +18,7 @@ import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.views.JoystickView
 import com.yoimerdr.android.virtualjoystick.views.JoystickView.Direction
 import com.yoimerdr.android.virtualjoystick.views.JoystickView.DirectionType
+import kotlin.math.hypot
 
 /**
  * Represents a virtual joystick control.
@@ -68,6 +70,8 @@ abstract class Control(
      * Must be initialized in classes that inherit from [Control].
      */
     abstract var drawer: ControlDrawer
+
+//    private val decimalFormat = DecimalFormat("#.###")
 
     init {
         mCenter = Position()
@@ -263,6 +267,36 @@ abstract class Control(
      */
     open val position: ImmutablePosition get() = mPosition.toImmutable()
 
+    private val axisXY: PointF = PointF()
+
+    val ndcAxis: PointF
+        get() {
+            val deltaX = mPosition.x - mCenter.x
+            val deltaY = mPosition.y - mCenter.y
+
+            // 半径
+            val radius = viewCircle.radius
+
+            val displacement = hypot(deltaX, deltaY)
+
+            return if (displacement <= radius) {
+                val xPercent = deltaX / radius
+                val yPercent = deltaY / radius
+
+                axisXY.set(xPercent.toFloat(), yPercent.toFloat())
+                axisXY
+            } else {
+                val ratio = radius / displacement
+                val constrainedX = mCenter.x + (mPosition.x - mCenter.x) * ratio
+                val constrainedY = mCenter.y + (mPosition.y - mCenter.y) * ratio
+
+                val xPercent = (constrainedX - mCenter.x) / radius
+                val yPercent = (constrainedY - mCenter.y) / radius
+
+                axisXY.set(xPercent.toFloat(), yPercent.toFloat())
+                axisXY
+            }
+        }
 
     /**
      * Calculates the distance between current position and center.

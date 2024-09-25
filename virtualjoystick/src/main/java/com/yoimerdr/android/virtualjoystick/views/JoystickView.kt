@@ -3,6 +3,7 @@ package com.yoimerdr.android.virtualjoystick.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.PointF
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -94,11 +95,16 @@ class JoystickView @JvmOverloads constructor(
      */
     val angle: Double get() = control.anglePosition
 
+    /**
+     * 归一化标准设备坐标 x轴(-1, 1),y轴(-1, 1)
+     */
+    val ndcAxis: PointF get() = control.ndcAxis
+
     init {
         var primaryColor = ContextCompat.getColor(context, R.color.drawer_primary)
         var accentColor = ContextCompat.getColor(context, R.color.drawer_accent)
 
-        var invalidRadius: Float = resources.getDimensionPixelSize(R.dimen.invalidRadius).toFloat()
+        var invalidRadius: Float = resources.getDimensionPixelSize(R.dimen.invalidRadiusDim).toFloat()
         var backgroundRes: Int
         var controlType = Control.DefaultType.CIRCLE
         var directionType = DirectionType.COMPLETE
@@ -244,7 +250,7 @@ class JoystickView @JvmOverloads constructor(
          * Called when joystick control is moved or held down.
          * @param direction The control direction
          */
-        fun onMove(direction: Direction)
+        fun onMove(direction: Direction, ndcAxis: PointF)
     }
 
     /**
@@ -307,11 +313,11 @@ class JoystickView @JvmOverloads constructor(
     }
 
 
-    private fun move(direction: Direction) {
-        listener?.onMove(direction)
+    private fun move(direction: Direction, ndcAxis: PointF = PointF(0f, 0f)) {
+        listener?.onMove(direction, ndcAxis)
     }
 
-    private fun move() = move(control.direction)
+    private fun move() = move(control.direction, control.ndcAxis)
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -319,14 +325,16 @@ class JoystickView @JvmOverloads constructor(
             return false
 
         val touchPosition = FixedPosition(event.x, event.y)
-        if(event.action != MotionEvent.ACTION_MOVE && Plane.distanceBetween(touchPosition, center) > viewRadius) {
+
+        if(event.action != MotionEvent.ACTION_MOVE
+            && event.action != MotionEvent.ACTION_UP
+            && Plane.distanceBetween(touchPosition, center) > viewRadius) {
             if(!control.isInCenter()) {
                 control.toCenter()
                 invalidate()
             }
             return false
         }
-
 
         try {
             control.setPosition(touchPosition)
