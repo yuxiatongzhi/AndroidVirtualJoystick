@@ -12,7 +12,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import com.yoimerdr.android.virtualjoystick.R
 import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.control.drawer.ColorfulControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
@@ -24,6 +23,7 @@ import com.yoimerdr.android.virtualjoystick.geometry.Size
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.utils.log.Logger
 import com.yoimerdr.android.virtualjoystick.views.handler.TouchHoldEventHandler
+import com.yuxiatongzhi.virtualjoystick.R
 
 /**
  * A view representing a virtual joystick.

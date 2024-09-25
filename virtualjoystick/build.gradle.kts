@@ -63,10 +63,10 @@ class PathFileBuilder(first: Any) {
 
 class LibraryProperties {
     var compileSdk = 34
-    var group = "com.yoimerdr.android"
+    var group = "com.yuxiatongzhi"
     var name = "virtualjoystick"
-    var version = "1.0.0"
-    var copyright = "© 2024 Yoimer Davila"
+    var version = "1.1.0"
+    var copyright = "© 2024 Rick"
     var minSdk = 21
 
     fun toPath(): Path {

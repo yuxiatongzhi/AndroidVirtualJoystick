@@ -269,6 +269,7 @@ abstract class Control(
 
     private val axisXY: PointF = PointF()
 
+    /** 标准设备坐标 */
     val ndcAxis: PointF
         get() {
             val deltaX = mPosition.x - mCenter.x
