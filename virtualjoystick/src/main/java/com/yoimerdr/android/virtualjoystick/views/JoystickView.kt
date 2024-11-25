@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.annotation.FloatRange
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.yoimerdr.android.virtualjoystick.control.Control
@@ -485,6 +486,39 @@ class JoystickView @JvmOverloads constructor(
      */
     fun setControlDrawer(drawer: ControlDrawer) {
         control.drawer = drawer
+        invalidate()
+    }
+
+    /**
+     * 设置 绘制 [ControlDrawer] 所占的半径比例
+     *
+     * @param ratio 半径比率 (0.1 ~ 0.8)
+     */
+    fun setDrawerRadiusRatio(@FloatRange(from = 0.1, to = 0.8) ratio: Float) {
+        controlBuilder.circleRadiusRatio(ratio)
+        buildControl()
+        invalidate()
+    }
+
+    /**
+     * 设置 弧形 绘制 的 扫过的角度
+     *
+     * @param angle (30.0 ~ 180.0)
+     */
+    fun setArcSweepAngle(@FloatRange(from = 30.0, to = 180.0) angle: Float) {
+        controlBuilder.arcSweepAngle(angle)
+        buildControl()
+        invalidate()
+    }
+
+    /**
+     * 设置 弧形 绘制 的 线宽
+     *
+     * @param width 默认 13.0
+     */
+    fun setArcStrokeWidth(@FloatRange(from = 5.0) width: Float) {
+        controlBuilder.arcStrokeWidth(width)
+        buildControl()
         invalidate()
     }
 }
