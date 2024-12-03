@@ -5,7 +5,9 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.PointF
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.util.AttributeSet
+import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.ColorInt
@@ -266,11 +268,25 @@ class JoystickView @JvmOverloads constructor(
         }
 
         override fun touchDown(): Boolean {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                view.performHapticFeedback(HapticFeedbackConstants.GESTURE_START)
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            }
+
             view.move()
             return true
         }
 
         override fun touchUp(): Boolean {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                view.performHapticFeedback(HapticFeedbackConstants.GESTURE_END)
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY_RELEASE)
+            }
+
             view.control.toCenter()
             view.move(Direction.NONE)
             return true
