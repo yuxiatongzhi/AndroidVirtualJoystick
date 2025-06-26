@@ -128,7 +128,8 @@ class MainActivity : AppCompatActivity() {
                     noDefaultDrawer = when (typeId) {
                         -1 -> HighlightControlDrawer(color, 0.48f)
                         -2 -> {
-                            val drawable = DrawableControlDrawer.getDrawable(this@MainActivity, R.drawable.baseline_adb_24)
+//                            val drawable = DrawableControlDrawer.getDrawable(this@MainActivity, R.drawable.baseline_adb_24)
+                            val drawable = DrawableControlDrawer.getDrawable(this@MainActivity, R.mipmap.control_drawer)
                             if(drawable is VectorDrawable)
                                 drawable.setTint(color)
                             DrawableControlDrawer(drawable)

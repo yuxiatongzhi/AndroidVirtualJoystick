@@ -53,6 +53,24 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <com.yoimerdr.android.virtualjoystick.views.JoystickView
+        android:id="@+id/vJoystick2"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        app:arcControlDrawer_sweepAngle="90"
+        app:controlDrawer_accentColor="#FFFFFF"
+        app:controlDrawer_primaryColor="#827100"
+        app:controlType="drawable"
+        app:drawableControlDrawer_vectorDrawable="@mipmap/control_drawer"
+        app:drawableControlDrawer_scale="2.5"
+        app:background="@mipmap/joystick_bg"
+        app:arcControlDrawer_strokeWidth="13.0"
+        app:circleControlDrawer_radiusProportion="0.34"
+        app:layout_constraintBottom_toTopOf="@id/vJoystick"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <TextView
         android:id="@+id/tvPrimaryColor"
         android:layout_width="wrap_content"
