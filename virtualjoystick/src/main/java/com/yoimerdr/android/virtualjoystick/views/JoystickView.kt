@@ -27,6 +27,7 @@ import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.utils.log.Logger
 import com.yoimerdr.android.virtualjoystick.views.handler.TouchHoldEventHandler
 import com.yuxiatongzhi.virtualjoystick.R
+import androidx.core.content.withStyledAttributes
 
 /**
  * A view representing a virtual joystick.
@@ -107,8 +108,9 @@ class JoystickView @JvmOverloads constructor(
         var primaryColor = ContextCompat.getColor(context, R.color.drawer_primary)
         var accentColor = ContextCompat.getColor(context, R.color.drawer_accent)
 
+        // 无效半径——此半径范围内，方向无效
         var invalidRadius: Float = resources.getDimensionPixelSize(R.dimen.invalidRadiusDim).toFloat()
-        var backgroundRes: Int
+        var backgroundRes: Int = -1
         var controlType = Control.DefaultType.CIRCLE
         var directionType = DirectionType.COMPLETE
 
@@ -117,32 +119,74 @@ class JoystickView @JvmOverloads constructor(
 
         var circleRadiusProportion: Float = ResourcesCompat.getFloat(resources, R.dimen.circle_radiusRatio)
 
+        @DrawableRes var drawableControlRes: Int = -1
+        var drawableControlDrawerScale: Float = 1.0f
+
         if(attrs != null) {
-            context.obtainStyledAttributes(attrs, R.styleable.JoystickView)
-                .also { styles ->
-                    interval = styles.getInteger(R.styleable.JoystickView_moveInterval, interval.toInt()).toLong()
+            context.withStyledAttributes(attrs, R.styleable.JoystickView) {
+                interval =
+                    getInteger(R.styleable.JoystickView_moveInterval, interval.toInt())
+                        .toLong()
 
-                    // all types
-                    invalidRadius = styles.getDimensionPixelSize(R.styleable.JoystickView_invalidRadius, invalidRadius.toInt()).toFloat()
-                    primaryColor = styles.getColor(R.styleable.JoystickView_controlDrawer_primaryColor, primaryColor)
-                    accentColor = styles.getColor(R.styleable.JoystickView_controlDrawer_accentColor, accentColor)
-                    controlType = Control.DefaultType.fromId(styles.getInt(R.styleable.JoystickView_controlType, controlType.id))
-                    directionType = DirectionType.fromId(styles.getInt(R.styleable.JoystickView_directionType, directionType.id))
-                    backgroundRes = getBackgroundResOf(controlType).let {
-                        styles.getResourceId(R.styleable.JoystickView_background, it)
-                    }
-
-                    // arc types
-                    arcStrokeWidth = styles.getFloat(R.styleable.JoystickView_arcControlDrawer_strokeWidth, arcStrokeWidth)
-                    arcSweepAngle = styles.getFloat(R.styleable.JoystickView_arcControlDrawer_sweepAngle, arcSweepAngle)
-
-                    // circle types
-                    circleRadiusProportion = styles.getFloat(R.styleable.JoystickView_circleControlDrawer_radiusProportion, circleRadiusProportion)
+                // all types
+                invalidRadius = getDimensionPixelSize(
+                    R.styleable.JoystickView_invalidRadius,
+                    invalidRadius.toInt()
+                ).toFloat()
+                primaryColor = getColor(
+                    R.styleable.JoystickView_controlDrawer_primaryColor,
+                    primaryColor
+                )
+                accentColor =
+                    getColor(R.styleable.JoystickView_controlDrawer_accentColor, accentColor)
+                controlType = Control.DefaultType.fromId(
+                    getInt(
+                        R.styleable.JoystickView_controlType,
+                        controlType.id
+                    )
+                )
+                directionType = DirectionType.fromId(
+                    getInt(
+                        R.styleable.JoystickView_directionType,
+                        directionType.id
+                    )
+                )
+                backgroundRes = getBackgroundResOf(controlType).let {
+                    getResourceId(R.styleable.JoystickView_background, it)
                 }
-                .recycle()
+
+                // arc types
+                arcStrokeWidth = getFloat(
+                    R.styleable.JoystickView_arcControlDrawer_strokeWidth,
+                    arcStrokeWidth
+                )
+                arcSweepAngle = getFloat(
+                    R.styleable.JoystickView_arcControlDrawer_sweepAngle,
+                    arcSweepAngle
+                )
+
+                // circle types
+                circleRadiusProportion = getFloat(
+                    R.styleable.JoystickView_circleControlDrawer_radiusProportion,
+                    circleRadiusProportion
+                )
+
+                if (controlType == Control.DefaultType.DRAWABLE) {
+                    drawableControlRes = getResourceId(R.styleable.JoystickView_drawableControlDrawer_vectorDrawable, -1)
+                    drawableControlDrawerScale =
+                        getFloat(R.styleable.JoystickView_drawableControlDrawer_scale, 1f)
+
+                }
+            }
         } else {
             backgroundRes = getBackgroundResOf(controlType)
         }
+
+        val controlDrawer = try {
+            if (drawableControlRes != -1) {
+                getCompatDrawable(drawableControlRes)
+            } else null
+        } catch (_: Exception) { null }
 
         control = controlBuilder
             .primaryColor(primaryColor)
@@ -153,6 +197,7 @@ class JoystickView @JvmOverloads constructor(
             .circleRadiusRatio(circleRadiusProportion)
             .type(controlType)
             .directionType(directionType)
+            .controlDrawer(controlDrawer, drawableControlDrawerScale)
             .build()
 
         background = try {

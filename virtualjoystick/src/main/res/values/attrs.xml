@@ -3,12 +3,15 @@
     <declare-styleable name="JoystickView">
         <attr name="background" format="reference" />
         <attr name="moveInterval" format="integer" />
+        <!-- 无效半径 : 此半径范围内 方向为 None -->
         <attr name="invalidRadius" format="dimension" />
         <attr name="controlType" format="enum">
             <enum name="circle" value="0" />
             <enum name="arc" value="1" />
             <enum name="circe_arc" value="2" />
+            <enum name="drawable" value="3" />
         </attr>
+
         <attr name="directionType" format="enum">
             <enum name="complete" value="0" />
             <enum name="simple" value="1" />
@@ -20,6 +23,11 @@
         <attr name="arcControlDrawer_sweepAngle" format="float" />
         <attr name="arcControlDrawer_strokeWidth" format="float" />
 
+        <!-- circle control drawer 半径比例 : 控制 Drawer 的大小 -->
         <attr name="circleControlDrawer_radiusProportion" format="float" />
+
+        <attr name="drawableControlDrawer_vectorDrawable" format="reference" />
+        <!-- drawable 的缩放倍数 来控制 drawer 的大小 -->
+        <attr name="drawableControlDrawer_scale" format="float" />
     </declare-styleable>
 </resources>

@@ -3,10 +3,14 @@ package com.yoimerdr.android.virtualjoystick.control
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PointF
+import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import com.yoimerdr.android.virtualjoystick.control.drawer.ArcControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.CircleControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
+import com.yoimerdr.android.virtualjoystick.control.drawer.DrawableControlDrawer
+import com.yoimerdr.android.virtualjoystick.control.drawer.HighlightControlDrawer
 import com.yoimerdr.android.virtualjoystick.exceptions.InvalidControlPositionException
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.geometry.ImmutablePosition
@@ -83,7 +87,9 @@ abstract class Control(
     enum class DefaultType(val id: Int) {
         CIRCLE(0),
         ARC(1),
-        CIRCLE_ARC(2);
+        CIRCLE_ARC(2),
+        DRAWABLE(3),
+        HIGHLIGHT(4);
         companion object {
             /**
              * @param id The id for the enum value
@@ -119,6 +125,13 @@ abstract class Control(
 
         // for circle type
         private var circleRadiusRatio: Float = 0.25f
+
+        /** for drawable type */
+        private var controlDrawerDrawable: Drawable? = null
+        private var drawableControlScaleRatio = 1f
+
+        /** for highlight type */
+        private var highlightInnerRadiusRatio = 0.48f
 
         fun primaryColor(@ColorInt color: Int): Builder {
             colors.primary = color
@@ -181,9 +194,20 @@ abstract class Control(
             return this
         }
 
+        fun controlDrawer(drawable: Drawable?, scale: Float = 1f): Builder {
+            this.controlDrawerDrawable = drawable
+            this.drawableControlScaleRatio = scale
+            return this
+        }
+
+        fun highlightInnerRadiusRatio(ratio: Float): Builder {
+            highlightInnerRadiusRatio = HighlightControlDrawer.getInnerRadiusRatio(ratio)
+            return this
+        }
+
         fun build(): Control {
             return when (type) {
-                Control.DefaultType.ARC -> ArcControl(
+                DefaultType.ARC -> ArcControl(
                     colors,
                     invalidRadius,
                     directionType,
@@ -191,7 +215,7 @@ abstract class Control(
                     arcSweepAngle
                 )
 
-                Control.DefaultType.CIRCLE_ARC -> CircleArcControl(
+                DefaultType.CIRCLE_ARC -> CircleArcControl(
                     colors,
                     invalidRadius,
                     directionType,
@@ -200,11 +224,33 @@ abstract class Control(
                     circleRadiusRatio
                 )
 
-                Control.DefaultType.CIRCLE -> CircleControl(
+                DefaultType.CIRCLE -> CircleControl(
                     colors,
                     invalidRadius,
                     directionType,
                     circleRadiusRatio
+                )
+
+//                DefaultType.DRAWABLE -> DrawableControl(
+//                    controlDrawerDrawable!!,
+//                    drawableControlScaleRatio,
+//                    invalidRadius,
+//                    directionType,
+//                )
+
+                DefaultType.DRAWABLE -> FitDrawableControl(
+                    controlDrawerDrawable!!,
+                    circleRadiusRatio,
+                    invalidRadius,
+                    directionType,
+                )
+
+                DefaultType.HIGHLIGHT -> HighlightControl(
+                    colors,
+                    false,
+                    highlightInnerRadiusRatio,
+                    invalidRadius,
+                    directionType,
                 )
             }
         }
@@ -372,6 +418,8 @@ abstract class Control(
                 toCenter()
             }
         }
+
+        drawer.onSizeChanged(size)
     }
 
     /**
