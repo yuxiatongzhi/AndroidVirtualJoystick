@@ -66,8 +66,8 @@ class LibraryProperties {
     var compileSdk = 34
     var group = "com.yuxiatongzhi"
     var name = "virtualjoystick"
-    var version = "1.0.3"
-    var copyright = "© 2024 Rick"
+    var version = "1.1.2"
+    var copyright = "© 2025 Rick"
     var minSdk = 21
 
     fun toPath(): Path {
