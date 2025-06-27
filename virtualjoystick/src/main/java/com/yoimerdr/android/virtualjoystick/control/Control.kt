@@ -238,12 +238,23 @@ abstract class Control(
 //                    directionType,
 //                )
 
-                DefaultType.DRAWABLE -> FitDrawableControl(
-                    controlDrawerDrawable!!,
-                    circleRadiusRatio,
-                    invalidRadius,
-                    directionType,
-                )
+                DefaultType.DRAWABLE -> {
+                    if (controlDrawerDrawable == null) {
+                        CircleControl(
+                            colors,
+                            invalidRadius,
+                            directionType,
+                            circleRadiusRatio
+                        )
+                    } else {
+                        FitDrawableControl(
+                            controlDrawerDrawable!!,
+                            circleRadiusRatio,
+                            invalidRadius,
+                            directionType,
+                        )
+                    }
+                }
 
                 DefaultType.HIGHLIGHT -> HighlightControl(
                     colors,

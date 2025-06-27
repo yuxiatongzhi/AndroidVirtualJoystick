@@ -28,6 +28,7 @@ import com.yoimerdr.android.virtualjoystick.utils.log.Logger
 import com.yoimerdr.android.virtualjoystick.views.handler.TouchHoldEventHandler
 import com.yuxiatongzhi.virtualjoystick.R
 import androidx.core.content.withStyledAttributes
+import com.yoimerdr.android.virtualjoystick.control.drawer.FitDrawableControlDrawer
 
 /**
  * A view representing a virtual joystick.
@@ -581,5 +582,39 @@ class JoystickView @JvmOverloads constructor(
         controlBuilder.arcStrokeWidth(width)
         buildControl()
         invalidate()
+    }
+
+    /**
+     * 控制器类型为 [Control.DefaultType.DRAWABLE] 时，设置一个 [Drawable] 作为 [ControlDrawer]
+     *
+     * @param drawable      drawable resource id
+     * @param radiusRatio   绘制此 Drawer 所使用的半径比例, 如果要基于自size控制大小，请采用 [setControlDrawer]
+     */
+    fun setControlDrawerDrawable(
+        @DrawableRes drawable: Int,
+        @FloatRange(from = 0.1, to = 0.8) radiusRatio: Float
+    ) {
+        getCompatDrawable(drawable)?.let {
+            setControlDrawerDrawable(it, radiusRatio)
+        }
+    }
+
+    /**
+     * 控制器类型为 [Control.DefaultType.DRAWABLE] 时，设置一个 [Drawable] 作为 [ControlDrawer]
+     *
+     * @param drawable      [Drawable]
+     * @param radiusRatio   绘制此 Drawer 所使用的半径比例
+     */
+    fun setControlDrawerDrawable(
+        drawable: Drawable,
+        @FloatRange(from = 0.1, to = 0.8) radiusRatio: Float
+    ) {
+        controlBuilder.controlDrawer(drawable)
+        controlBuilder.circleRadiusRatio(radiusRatio)
+
+        if (this.control.drawer is FitDrawableControlDrawer) {
+            buildControl()
+            invalidate()
+        }
     }
 }
