@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity() {
 
 
         vJoystick.apply {
-            setMoveListener { direction, ndcAxis ->
+            setMoveListener { _: View, direction, ndcAxis ->
                 tvDirection.text = getString(R.string.joystick_direction).format(direction.name)
                 val position = this.position
                 tvPosition.text = getString(R.string.joystick_position).format(position.x, position.y)

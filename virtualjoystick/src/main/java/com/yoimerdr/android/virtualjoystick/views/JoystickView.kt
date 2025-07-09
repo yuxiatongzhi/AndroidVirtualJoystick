@@ -245,7 +245,7 @@ class JoystickView @JvmOverloads constructor(
     }
 
     /**
-     * The possibles directions of the joystick.
+     * 摇杆的 **方向**
      */
     enum class Direction {
         UP,
@@ -296,10 +296,13 @@ class JoystickView @JvmOverloads constructor(
      */
     fun interface MoveListener {
         /**
-         * Called when joystick control is moved or held down.
-         * @param direction The control direction
+         * **摇杆** 移动时的 监听
+         *
+         * @param view      [View] 本身
+         * @param direction [Direction] 摇杆方向
+         * @param ndcAxis   物体坐标系归一化坐标 (x, y)
          */
-        fun onMove(direction: Direction, ndcAxis: PointF)
+        fun onMove(view: View, direction: Direction, ndcAxis: PointF)
     }
 
     /**
@@ -377,7 +380,7 @@ class JoystickView @JvmOverloads constructor(
 
 
     private fun move(direction: Direction, ndcAxis: PointF = PointF(0f, 0f)) {
-        listener?.onMove(direction, ndcAxis)
+        listener?.onMove(this, direction, ndcAxis)
     }
 
     private fun move() = move(control.direction, control.ndcAxis)
@@ -480,6 +483,13 @@ class JoystickView @JvmOverloads constructor(
     fun setTypeAndBackground(type: Control.DefaultType) {
         setType(type)
         val drawable = getCompatDrawable(getBackgroundResOf(type))
+        if(drawable != null)
+            background = drawable
+    }
+
+    fun setTypeAndBackground(type: Control.DefaultType, @DrawableRes backgroundRes: Int) {
+        setType(type)
+        val drawable = getCompatDrawable(backgroundRes)
         if(drawable != null)
             background = drawable
     }

@@ -66,7 +66,7 @@ class LibraryProperties {
     var compileSdk = 34
     var group = "com.yuxiatongzhi"
     var name = "virtualjoystick"
-    var version = "1.1.3"
+    var version = "1.1.4"
     var copyright = "© 2025 Rick"
     var minSdk = 21
 
